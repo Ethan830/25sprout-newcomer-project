@@ -1,0 +1,47 @@
+# From https://fox.25sprout.com/ci-references/cicd-v3/builder-fe
+include:
+  - project: 'ci-references/cicd-v3/builder-fe'
+    ref: main
+    file:
+      - '/fe-build-template.yml'
+
+# jobs sequense pipeline
+stages:
+  - test
+  - build
+  - pack
+  - deploy
+  - release
+  - trigger
+
+variables:
+  _ARTIFACT_PATH: 'public'
+  _BRANCH: '${CI_COMMIT_REF_NAME}'
+  _PROJECT_NAME: '${CI_PROJECT_NAME}'
+
+test:
+  tags:
+    - node-16
+
+build:
+  tags:
+    - node-16
+
+trigger-deploy:
+  stage: trigger
+  rules:
+    - if: '$CI_COMMIT_REF_NAME =~ /^(develop|release|staging)$/'
+      variables:
+        _BRANCH: $CI_COMMIT_BRANCH
+        _PROJECT_ID: $CI_PROJECT_ID
+        _PROJECT_NAME: $CI_PROJECT_NAME
+        _ACTION: 'deploy'
+    - if: '$CI_COMMIT_REF_NAME =~ /^(main|master|production)$/'
+      variables:
+        _BRANCH: 'production'
+        _PROJECT_ID: $CI_PROJECT_ID
+        _PROJECT_NAME: $CI_PROJECT_NAME
+        _ACTION: 'deploy'
+      when: manual
+  trigger:
+    project: example/devops/router

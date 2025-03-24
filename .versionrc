@@ -1,0 +1,5 @@
+{
+	"commitUrlFormat": "https://fox.25sprout.com/frontend/react-starter/commit/{{hash}}",
+	"compareUrlFormat": "https://fox.25sprout.com/frontend/react-starter/compare/{{previousTag}}...{{currentTag}}",
+	"issueUrlFormat": "https://fox.25sprout.com/frontend/react-starter/issues/{{id}}"
+}
